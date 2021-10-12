@@ -14,6 +14,7 @@ class Website(object):
             '/', 'index',
             '/api/colours', 'api_colours',
             '/api/brightness', 'api_brightness',
+            '/api/shutdown', 'api_shutdown',
         )
         self.app = web.application(urls, globals())
     def start(self):
@@ -33,8 +34,16 @@ class api_brightness(object):
         return json.dumps({'brightness': lights.brightness})
     def PUT(self):
         data = json.loads(web.data())
-        # TODO: validate brightness 0.0 - 1.0
-        lights.brightness = float(data['brightness'])
-        lights.create()
+        b = float(data['brightness'])
+        if b >= 0.0 and b <= 1.0:
+            lights.brightness = b
+            lights.create()
         return json.dumps({'brightness': lights.brightness})
+
+class api_shutdown(object):
+    def PUT(self):
+        data = json.loads(web.data())
+        if data['shutdown'] == 1:
+            os.system('shutdown -h 5s')
+        return json.dumps({'shutdown': 1})
 

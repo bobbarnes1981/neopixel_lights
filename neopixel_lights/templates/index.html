@@ -8,6 +8,7 @@ $def with (lights)
             jQuery(document).ready(function(){
                 jQuery('#lights_brightness_plus').click(click_brightness_plus);
                 jQuery('#lights_brightness_minus').click(click_brightness_minus);
+                jQuery('#shutdown').click(click_shutdown);
             }); 
             function set_brightness(brightness, id) {
                 jQuery.ajax({
@@ -39,6 +40,22 @@ $def with (lights)
                 }
                 set_brightness(brightness);
             }
+            function click_shutdown() {
+                if (confirm('shutdown?')) {
+                    jQuery.ajax({
+                        url: '/api/shutdown',
+                        method: 'PUT',
+                        dataType: 'JSON',
+                        data: '{"shutdown": 1}',
+                        success: function(data, textStatus, jqXHR){
+                            alert('success');
+                        },
+                        error: function(jqXHR, textStatus, errorThrown){
+                            alert('error');
+                        }
+                    });
+                }
+            }
         </script>
     </head>
     <body>
@@ -58,5 +75,6 @@ $def with (lights)
             $for colour in lights.colours:
             <li>$colour</li>
         </ul>
+        <input id="shutdown" type="button" value="shutdown"/>
     </body>
 </html>

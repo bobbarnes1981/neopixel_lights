@@ -44,6 +44,6 @@ class api_shutdown(object):
     def PUT(self):
         data = json.loads(web.data())
         if data['shutdown'] == 1:
-            os.system('shutdown -h 5s')
+            os.system('shutdown -h now')
         return json.dumps({'shutdown': 1})
 

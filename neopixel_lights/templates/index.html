@@ -1,6 +1,62 @@
 $def with (lights)
-
-<ul>
-    <li>pixels: $lights.num_pixels</li>
-    <li>brightness: $lights.brightness</li>
-</ul> 
+<html>
+    <head>
+        <title></title>
+<!--        <script language="javascript" src="static/jquery-3.6.0.js"></script>-->
+        <script language="javascript" src="https://code.jquery.com/jquery-3.6.0.js"></script>
+        <script language="javascript">
+            jQuery(document).ready(function(){
+                jQuery('#lights_brightness_plus').click(click_brightness_plus);
+                jQuery('#lights_brightness_minus').click(click_brightness_minus);
+            }); 
+            function set_brightness(brightness, id) {
+                jQuery.ajax({
+                    url: '/api/brightness',
+                    method: 'PUT',
+                    dataType: 'JSON',
+                    data: '{"brightness": ' + brightness + '}',
+                    success: function(data, textStatus, jqXHR){
+                        jQuery('#lights_brightness').html(data['brightness']);
+                    },
+                    error: function(jqXHR, textStatus, errorThrown){
+                        alert('error');
+                    }
+                });
+            }
+            function click_brightness_plus() {
+                var brightness = Number(jQuery('#lights_brightness').html());
+                if (brightness < 1) {
+                    brightness = brightness + 0.1;
+                    brightness = brightness.toFixed(2);
+                }
+                set_brightness(brightness);
+            }
+            function click_brightness_minus() {
+                var brightness = Number(jQuery('#lights_brightness').html());
+                if (brightness > 0) {
+                    brightness = brightness - 0.1;
+                    brightness = brightness.toFixed(2);
+                }
+                set_brightness(brightness);
+            }
+        </script>
+    </head>
+    <body>
+        <h1>neopixel</h1>
+        <h2>config</h2>
+        <ul>
+            <li>pixels: $lights.num_pixels</li>
+            <li>
+                brightness: <span id="lights_brightness">$lights.brightness</span>
+                <input id="lights_brightness_plus" type="button" value="+"/>
+                <input id="lights_brightness_minus" type="button" value="-"/>
+            </li>
+            <li>order: $lights.order</li>
+        </ul> 
+        <h2>colours</h2>
+        <ul>
+            $for colour in lights.colours:
+            <li>$colour</li>
+        </ul>
+    </body>
+</html>

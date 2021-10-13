@@ -3,6 +3,7 @@ import os
 import web
 
 from lights import Lights
+from web.httpserver import StaticMiddleware
 
 render = web.template.render(os.path.dirname(__file__) + '/templates/')
 
@@ -19,7 +20,7 @@ class Website(object):
         self.app = web.application(urls, globals())
     def start(self):
         lights.start()
-        self.app.run()
+        self.app.run(lambda app: StaticMiddleware(app, '/content/', os.path.dirname(__file__)))
 
 class index(object):
     def GET(self):

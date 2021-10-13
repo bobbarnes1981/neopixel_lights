@@ -14,6 +14,7 @@ class Website(object):
         urls = (
             '/', 'index',
             '/api/colours', 'api_colours',
+            '/api/selectedcolours', 'api_selectedcolours',
             '/api/brightness', 'api_brightness',
             '/api/shutdown', 'api_shutdown',
         )
@@ -24,11 +25,22 @@ class Website(object):
 
 class index(object):
     def GET(self):
-        return render.index(lights)
+        return render.index(lights, {'c': 'Christmas', 'h': 'Halloween'}, lights.chase_selected_colours)
 
 class api_colours(object):
     def GET(self):
-        return json.dumps({'colours': lights.colours})
+        return json.dumps({'colours': lights.chase_colours})
+
+class api_selectedcolours(object):
+    def GET(self):
+        return json.dumps({'selected': lights.chase_selected_colours, 'colours': lights.chase_colours[lights.chase_selected_colours]})
+    def PUT(self):
+        data = json.loads(web.data())
+        c = data['selected']
+        if c in lights.chase_colours.keys():
+            lights.chase_selected_colours = c
+            lights.create()
+        return json.dumps({'selected': lights.chase_selected_colours, 'colours': lights.chase_colours[lights.chase_selected_colours]})
 
 class api_brightness(object):
     def GET(self):

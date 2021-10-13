@@ -1,4 +1,4 @@
-$def with (lights)
+$def with (lights, colours, selected_colours)
 <html>
     <head>
         <title></title>
@@ -7,6 +7,7 @@ $def with (lights)
             jQuery(document).ready(function(){
                 jQuery('#lights_brightness_plus').click(click_brightness_plus);
                 jQuery('#lights_brightness_minus').click(click_brightness_minus);
+                jQuery('#lights_chase_colours').change(change_chase_colours);
                 jQuery('#shutdown').click(click_shutdown);
             }); 
             function set_brightness(brightness, id) {
@@ -55,6 +56,26 @@ $def with (lights)
                     });
                 }
             }
+            function change_chase_colours() {
+                var selected_colours = jQuery('#lights_chase_colours').val();
+                jQuery.ajax({
+                    url: '/api/selectedcolours',
+                    method: 'PUT',
+                    dataType: 'JSON',
+                    data: '{"selected": "' + selected_colours + '"}',
+                    success: function(data, textStatus, jqXHR){
+                        jQuery('#lights_chase_colours').val(data['selected']);
+                        var l = jQuery('#lights_chase_colours_list')
+                        l.html('');
+                        data['colours'].forEach(function(item, index, arr){
+                            l.append('<li>(' + item.join(', ') + ')</li>');
+                        });
+                    },
+                    error: function(jqXHR, textStatus, errorThrown){
+                        alert('error');
+                    }
+                });
+            }
         </script>
     </head>
     <body>
@@ -70,8 +91,15 @@ $def with (lights)
             <li>order: $lights.order</li>
         </ul> 
         <h2>colours</h2>
-        <ul>
-            $for colour in lights.colours:
+        <select id="lights_chase_colours">
+            $for c in colours:
+                $if selected_colours == c:
+                    <option selected="selected" value="$c">$colours[c]</option>
+                $else:
+                    <option value="$c">$colours[c]</option>
+        </select>
+        <ul id="lights_chase_colours_list">
+            $for colour in lights.chase_colours[lights.chase_selected_colours]:
             <li>$colour</li>
         </ul>
         <input id="shutdown" type="button" value="shutdown"/>

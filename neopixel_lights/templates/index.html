@@ -68,7 +68,7 @@ $def with (lights, colours, selected_colours)
                         var l = jQuery('#lights_chase_colours_list')
                         l.html('');
                         data['colours'].forEach(function(item, index, arr){
-                            l.append('<li>(' + item.join(', ') + ')</li>');
+                            l.append('<li style="background-color: rgb(' + item.join(', ') + ')">(' + item.join(', ') + ')</li>');
                         });
                     },
                     error: function(jqXHR, textStatus, errorThrown){
@@ -100,7 +100,7 @@ $def with (lights, colours, selected_colours)
         </select>
         <ul id="lights_chase_colours_list">
             $for colour in lights.chase_colours[lights.chase_selected_colours]:
-            <li>$colour</li>
+            <li style="background-color: rgb($colour[0], $colour[1], $colour[2])">$colour</li>
         </ul>
         <input id="shutdown" type="button" value="shutdown"/>
     </body>

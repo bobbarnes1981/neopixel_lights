@@ -57,6 +57,7 @@ class api_shutdown(object):
     def PUT(self):
         data = json.loads(web.data())
         if data['shutdown'] == 1:
+            lights.set_mode('off')
             os.system('shutdown -h now')
         return json.dumps({'shutdown': 1})
 

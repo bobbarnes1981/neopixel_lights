@@ -42,8 +42,12 @@ class Lights(Thread):
         while self.running:
             if self.mode == 'chase':
                 self.mode_chase()
+            elif self.mode == 'off':
+                self.mode_off()
             else:
                 print("Unrecognised mode {0}".format(self.mode))
+    def set_mode(self, mode):
+        self.mode = mode
     def mode_chase(self):
         for p in range(0, self.num_pixels):
             num = (p+self.chase_offset) % len(self.chase_colours[self.chase_selected_colours])
@@ -53,4 +57,8 @@ class Lights(Thread):
         if self.chase_offset == len(self.chase_colours[self.chase_selected_colours]):
             self.chase_offset = 0
         time.sleep(0.5)
+    def mode_off(self):
+        for p in range(0, self.num_pixels):
+            self.pixels[p] = (0, 0, 0)
+        self.pixels.show()
 

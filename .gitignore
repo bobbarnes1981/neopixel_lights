@@ -1,2 +1,3 @@
 neopixel_lights/__pycache__
 neopixel_lights/web
+neopixel_lights/*.pyc

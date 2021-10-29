@@ -10,10 +10,14 @@ modes = [
 
 class Lights(Thread):
     chase_colours = {
-        'h': [
+        'h1': [
             (255, 60, 0),   # orange
             (0, 128, 0),    # green
             (128, 0, 128)   # purple
+        ],
+        'h2': [
+            (255, 60, 0),   # orange
+            (0, 128, 0),    # green
         ],
         'c': [
             (255, 0, 0),    # red
@@ -29,7 +33,7 @@ class Lights(Thread):
         self.order = neopixel.RGB
         self.running = False
 
-        self.chase_selected_colours = 'h'
+        self.chase_selected_colours = 'h2'
         self.chase_offset = 0
 
         self.mode = 'chase'

@@ -1,4 +1,4 @@
-$def with (lights, colours, selected_colours)
+$def with (lights, colours, modes, selected_colours, selected_mode)
 <html>
     <head>
         <title></title>
@@ -9,6 +9,7 @@ $def with (lights, colours, selected_colours)
                 jQuery('#lights_brightness_plus').click(click_brightness_plus);
                 jQuery('#lights_brightness_minus').click(click_brightness_minus);
                 jQuery('#lights_chase_colours').change(change_chase_colours);
+                jQuery('#lights_mode').change(change_mode);
                 jQuery('#shutdown').click(click_shutdown);
             }); 
             function set_brightness(brightness, id) {
@@ -77,6 +78,21 @@ $def with (lights, colours, selected_colours)
                     }
                 });
             }
+            function change_mode() {
+                var selected_mode = jQuery('#lights_mode').val();
+                jQuery.ajax({
+                    url: '/api/mode',
+                    method: 'PUT',
+                    dataType: 'JSON',
+                    data: '{"mode": "' + selected_mode + '"}',
+                    success: function(data, textStatus, jqXHR){
+                        jQuery('#lights_mode').val(data['mode']);
+                    },
+                    error: function(jqXHR, textStatus, errorThrown){
+                        alert('error');
+                    }
+                });
+            }
         </script>
     </head>
     <body>
@@ -92,6 +108,14 @@ $def with (lights, colours, selected_colours)
             </li>
             <li class="list-group-item">order: <span class="badge bg-dark">$lights.order</span></li>
         </ul> 
+        <h2>mode</h2>
+        <select id="lights_mode" class="form-select">
+            $for m in modes:
+                $if selected_mode == m:
+                    <option selected="selected" value="$m">$m</option>
+                $else:
+                    <option value="$m">$m</option>
+        </select>
         <h2>colours</h2>
         <select id="lights_chase_colours" class="form-select">
             $for c in colours:

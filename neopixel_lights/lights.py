@@ -26,7 +26,7 @@ class Lights(Thread):
             (128, 128, 128) # white
         ]
     }
-    def __init__(self):
+    def __init__(self, mode, selected_colours):
         Thread.__init__(self)
         self.pixel_pin = board.D18
         self.num_pixels = 50
@@ -34,12 +34,12 @@ class Lights(Thread):
         self.order = neopixel.RGB
         self.running = False
 
-        self.chase_selected_colours = 'h2'
+        self.chase_selected_colours = selected_colours
         self.chase_offset = 0
 
         self.wheel_offset = 0
 
-        self.mode = 'chase'
+        self.mode = mode
     def create(self):
         self.pixels = neopixel.NeoPixel(self.pixel_pin, self.num_pixels, brightness=self.brightness, auto_write=False, pixel_order=self.order)
     def run(self):

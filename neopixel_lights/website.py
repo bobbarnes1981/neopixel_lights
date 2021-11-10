@@ -7,7 +7,10 @@ from web.httpserver import StaticMiddleware
 
 render = web.template.render(os.path.dirname(__file__) + '/templates/')
 
-lights = Lights()
+default_mode = 'wheel'
+default_colours = 'c'
+
+lights = Lights(default_mode, default_colours)
 
 class Website(object):
     def __init__(self):

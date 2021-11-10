@@ -1,12 +1,14 @@
 import board
 import neopixel
 import time
+import random
 
 from threading import Thread
 
 modes = [
-    'chase'
-    'wheel'
+    'chase',
+    'wheel',
+    'twinkle'
 ]
 
 class Lights(Thread):
@@ -39,6 +41,12 @@ class Lights(Thread):
 
         self.wheel_offset = 0
 
+        self.twink_max_time = 4
+        self.twink_twinkles = 3
+        self.twink_pixels = []
+        for _ in range(self.num_pixels):
+            self.twink_pixels.append(0)
+
         self.mode = mode
     def create(self):
         self.pixels = neopixel.NeoPixel(self.pixel_pin, self.num_pixels, brightness=self.brightness, auto_write=False, pixel_order=self.order)
@@ -51,17 +59,40 @@ class Lights(Thread):
                 self.mode_chase()
             elif self.mode == 'wheel':
                 self.mode_wheel()
+            elif self.mode == 'twinkle':
+                self.mode_twinkle()
             elif self.mode == 'off':
                 self.mode_off()
             else:
                 print("Unrecognised mode {0}".format(self.mode))
     def set_mode(self, mode):
         self.mode = mode
+    def mode_twinkle(self):
+        for _ in range(self.twink_twinkles):
+            r = random.randrange(self.num_pixels)
+            t = random.randrange(self.twink_max_time)
+            if self.twink_pixels[r] == 0:
+                self.twink_pixels[r] = t
+        for i in range(self.num_pixels):
+            if self.twink_pixels[i] == 4:
+                self.pixels[i] = (255, 255, 255)
+            if self.twink_pixels[i] == 3:
+                self.pixels[i] = (192, 192, 192)
+            if self.twink_pixels[i] == 2:
+                self.pixels[i] = (128, 128, 128)
+            if self.twink_pixels[i] == 1:
+                self.pixels[i] = (64, 64, 64)
+            if self.twink_pixels[i] == 0:
+                self.pixels[i] = (0, 0, 0)
+            if self.twink_pixels[i] > 0:
+                self.twink_pixels[i] -= 1
+        self.pixels.show()    
+        time.sleep(0.25)
     def mode_wheel(self):
         for p in range(0, self.num_pixels):
             idx = (p * 256 // self.num_pixels) + self.wheel_offset
             self.pixels[p] = self.wheel(idx & 255)
-            self.pixels.show()
+        self.pixels.show()
         self.wheel_offset += 1
         if self.wheel_offset > 255:
             self.wheel_offset = 0

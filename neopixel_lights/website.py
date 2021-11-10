@@ -29,7 +29,7 @@ class Website(object):
 
 class index(object):
     def GET(self):
-        return render.index(lights, {'c': 'Christmas', 'h1': 'Halloween', 'h2': 'Halloween 2'}, ['off', 'chase', 'wheel'], lights.chase_selected_colours, lights.mode)
+        return render.index(lights, {'c': 'Christmas', 'h1': 'Halloween', 'h2': 'Halloween 2'}, ['off', 'chase', 'wheel', 'twinkle'], lights.chase_selected_colours, lights.mode)
 
 class api_colours(object):
     def GET(self):
